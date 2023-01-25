@@ -52,6 +52,10 @@ async function getBalancePage(address: string, page?: number): Promise<Page> {
   });
   const result = await qnRes.json()
 
+  if (result.error) {
+    throw new Error(result.error)
+  }
+
   return result.result
 }
 
