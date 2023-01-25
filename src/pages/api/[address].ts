@@ -1,4 +1,5 @@
 import { getBalances, getETHBalance } from '@/quiknode'
+import { wrapHandler } from '@/requests'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 
@@ -16,7 +17,7 @@ interface Holding {
   value: number
 }
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Portfolio>
 ) {
@@ -66,8 +67,10 @@ export default async function handler(
     }
   }
 
-  res.status(200).json({
+  res.json({
     holdings,
     netValue,
   })
 }
+
+export default wrapHandler(handler, { cacheLength: 60 * 60 })
