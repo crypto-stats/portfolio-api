@@ -1,4 +1,4 @@
-import { getBalances } from '@/quiknode'
+import { getBalances, getETHBalance } from '@/quiknode'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 
@@ -21,6 +21,20 @@ export default async function handler(
   res: NextApiResponse<Portfolio>
 ) {
   const balances = await getBalances(req.query.address as string)
+  const ethBalance = await getETHBalance(req.query.address as string)
+
+  if (ethBalance.toString() !== '0') {
+    balances.push({
+      address: '0x0000000000000000000000000000000000000000',
+      name: 'Ether',
+      decimals: 18,
+      symbol: 'ETH',
+      logoURI: '',
+      chain: 'ETH',
+      network: 'mainnet',
+      amount: ethBalance.toString()
+    })
+  }
 
   const queries = balances.map((asset: any) => `ethereum:${asset.address}`)
 

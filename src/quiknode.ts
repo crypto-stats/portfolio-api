@@ -1,3 +1,7 @@
+import { JsonRpcProvider } from "@ethersproject/providers"
+
+const rpc = `https://special-wiser-pond.discover.quiknode.pro/${process.env.QUIKNODE_KEY}/`
+
 export interface Asset {
   address: string
   name: string
@@ -30,7 +34,7 @@ export async function getBalances(address: string): Promise<Asset[]> {
 }
 
 async function getBalancePage(address: string, page?: number): Promise<Page> {
-  const qnRes = await fetch(`https://special-wiser-pond.discover.quiknode.pro/${process.env.QUIKNODE_KEY}/`, {
+  const qnRes = await fetch(rpc, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -50,3 +54,5 @@ async function getBalancePage(address: string, page?: number): Promise<Page> {
 
   return result.result
 }
+
+export const getETHBalance = (address: string) => new JsonRpcProvider(rpc).getBalance(address)
