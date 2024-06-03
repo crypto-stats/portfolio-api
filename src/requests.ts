@@ -26,6 +26,7 @@ export function wrapHandler(
 
       await handler(req, res)
     } catch (err: any) {
+      console.error(err)
       res.status(500).json({ statusCode: 500, message: err.message })
     }
   }

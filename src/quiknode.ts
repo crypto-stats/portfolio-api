@@ -7,22 +7,22 @@ export interface Asset {
   name: string
   decimals: number
   symbol: string
-  logoURI: string
+  // logoURI: string
   chain: string
   network: string
-  amount: string
+  totalBalance: string
 }
 
 interface Page {
-  assets: any[]
-  owner: string
+  result: any[]
+  // owner: string
   totalPages: number
   totalItems: number
   pageNumber: number
 }
 
 export async function getBalances(address: string): Promise<Asset[]> {
-  const { assets: firstPage, totalPages } = await getBalancePage(address)
+  const { result: firstPage, totalPages } = await getBalancePage(address)
 
   const additionalPagePromises: Promise<Page>[] = []
   for (let i = 2; i < totalPages; i += 1) {
@@ -30,7 +30,7 @@ export async function getBalances(address: string): Promise<Asset[]> {
   }
   const additionalPageResults = await Promise.all(additionalPagePromises)
 
-  return [...firstPage, ...additionalPageResults.map(page => page.assets).flat()]
+  return [...firstPage, ...additionalPageResults.map(page => page.result).flat()]
 }
 
 async function getBalancePage(address: string, page?: number): Promise<Page> {
@@ -43,17 +43,17 @@ async function getBalancePage(address: string, page?: number): Promise<Page> {
       id: 67,
       jsonrpc: "2.0",
       method: "qn_getWalletTokenBalance",
-      params: {
+      params: [{
         wallet: address,
         perPage: 100,
         page,
-      },
+      }],
     })
   });
   const result = await qnRes.json()
 
   if (result.error) {
-    throw new Error(result.error)
+    throw new Error(result.error.message)
   }
 
   return result.result

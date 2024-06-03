@@ -30,10 +30,9 @@ async function handler(
       name: 'Ether',
       decimals: 18,
       symbol: 'ETH',
-      logoURI: '',
       chain: 'ETH',
       network: 'mainnet',
-      amount: ethBalance.toString()
+      totalBalance: ethBalance.toString()
     })
   }
 
@@ -50,7 +49,7 @@ async function handler(
     if (!tokensByAddress.has(asset.address)) {
       tokensByAddress.add(asset.address)
 
-      const amount = parseInt(asset.amount) / (10 ** asset.decimals)
+      const amount = parseInt(asset.totalBalance) / (10 ** asset.decimals)
       const price = prices.coins[`ethereum:${asset.address}`]?.price
       if (price) {
         const value = amount * price
